@@ -38,7 +38,7 @@
         <dependency>
             <groupId>com.github.znsio</groupId>
             <artifactId>ReportPortalIntegration</artifactId>
-            <version>0.0.1</version>
+            <version>84369efab7</version>
         </dependency>
     </dependencies>
     <build>
