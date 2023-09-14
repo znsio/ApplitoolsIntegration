@@ -4,7 +4,7 @@
 3. Dashboard link: https://jioeyes.applitools.com/
 
 # Build
-`mvn clean install -DskipTests`
+`mvn clean install -DskipTests -s ./settings.xml`
 
 # How to consume the dependency
    ```
