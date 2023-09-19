@@ -6,7 +6,7 @@ import com.applitools.eyes.selenium.Configuration;
 import com.applitools.eyes.selenium.Eyes;
 import com.applitools.eyes.visualgrid.services.RunnerOptions;
 import com.applitools.eyes.visualgrid.services.VisualGridRunner;
-import com.znsio.rpi.properties.Config;
+import com.znsio.api.utils.Config;
 import org.apache.log4j.Logger;
 import org.openqa.selenium.WebDriver;
 import org.testng.ITestContext;
@@ -18,8 +18,7 @@ import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 
-import static com.znsio.api.ApplitoolsConfigurationManager.rpProperties;
-import static com.znsio.rpi.utils.ReportPortalLogger.logInfoMessage;
+import static com.znsio.api.ApplitoolsConfigurationManager.config;
 
 public class VisualTest {
     private static WebDriver driver;
@@ -68,7 +67,7 @@ public class VisualTest {
         LOGGER.info("Is Applitools enabled for " + method.getName() + ": " + !eyes.getIsDisabled());
         eyes.open(driver,
                 eyesConfig.getAppName() + "-" +
-                        rpProperties.getProperty(Config.PLATFORM).toUpperCase() + "-" +
+                        config.getProperty(Config.PLATFORM).toUpperCase() + "-" +
                         eyesConfig.getEnvironmentName(),
                 method.getDeclaringClass().getSimpleName() + "-" + method.getName(),
                 eyesConfig.getViewportSize());
@@ -114,11 +113,11 @@ public class VisualTest {
                     result.getHostDisplaySize().getWidth(), result.getHostDisplaySize().getHeight(),
                     result.getMatches(), result.getMismatches(), result.getMissing(),
                     (result.isAborted() ? "aborted" : "no"));
-            logInfoMessage("Visual validation results" + logMessage +
+            LOGGER.info("Visual validation results" + logMessage +
                     "\nResults are available here: " + result.getUrl());
         }
         boolean hasMismatches = result.getMismatches() != 0 || result.isAborted();
-        logInfoMessage("Visual validation failed? - " + hasMismatches);
+        LOGGER.info("Visual validation failed? - " + hasMismatches);
         return hasMismatches;
     }
 }

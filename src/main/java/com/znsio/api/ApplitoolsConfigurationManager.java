@@ -1,10 +1,10 @@
 package com.znsio.api;
 
-import com.znsio.rpi.utils.commandline.CommandLineExecutor;
-import com.znsio.rpi.utils.commandline.CommandLineResponse;
+import com.znsio.api.utils.Config;
+import com.znsio.api.utils.commandline.CommandLineExecutor;
+import com.znsio.api.utils.commandline.CommandLineResponse;
 import com.applitools.eyes.*;
 import com.applitools.eyes.selenium.*;
-import com.znsio.rpi.properties.Config;
 import org.apache.log4j.Logger;
 import org.testng.util.Strings;
 
@@ -15,7 +15,7 @@ import java.util.Properties;
 
 class ApplitoolsConfigurationManager {
     private static final Properties applitoolsProperties = new Properties();
-    static final Properties rpProperties = Config.loadProperties(System.getProperty("CONFIG"));
+    static final Properties config = Config.loadProperties(System.getProperty("CONFIG"));
     private static boolean isApplitoolsDisabled;
     private static final String VISUAL_VALIDATION_GROUP_NAME = "visual";
     private static final Logger LOGGER = Logger.getLogger(ApplitoolsConfigurationManager.class.getName());
@@ -29,7 +29,7 @@ class ApplitoolsConfigurationManager {
     }
 
     static void loadProperties() throws IOException {
-        String applitoolsPropertiesFileName = rpProperties.getProperty(Config.APPLITOOLS_CONFIGURATION_FILE);
+        String applitoolsPropertiesFileName = config.getProperty(Config.APPLITOOLS_CONFIGURATION_FILE);
         applitoolsProperties.load(new FileInputStream(applitoolsPropertiesFileName));
         setApplitoolsStatus();
     }
@@ -46,13 +46,13 @@ class ApplitoolsConfigurationManager {
             batchInfo.addProperty("Run on Pipeline", "false");
             batchInfo.addProperty("Branch Name", getBranchNameUsingGitCommand());
         }
-        batchInfo.addProperty("Platform", rpProperties.getProperty(Config.PLATFORM).toUpperCase());
-        batchInfo.addProperty("Environment", rpProperties.getProperty(Config.TARGET_ENVIRONMENT).toUpperCase());
+        batchInfo.addProperty("Platform", config.getProperty(Config.PLATFORM).toUpperCase());
+        batchInfo.addProperty("Environment", config.getProperty(Config.TARGET_ENVIRONMENT).toUpperCase());
         batchInfo.addProperty("UFG Enabled", applitoolsProperties.getProperty("USE_UFG"));
     }
 
     static void setConfigProperties(Configuration eyesConfig) {
-        eyesConfig.setAppName(rpProperties.getProperty(Config.APP_NAME));
+        eyesConfig.setAppName(config.getProperty(Config.APP_NAME));
         eyesConfig.setViewportSize(getViewportSize(applitoolsProperties.getProperty("VIEWPORT_SIZE")));
         eyesConfig.setApiKey(System.getenv("APPLITOOLS_API_KEY"));
         eyesConfig.setSendDom(Boolean.parseBoolean(applitoolsProperties.getProperty("SEND_DOM")));
@@ -62,7 +62,7 @@ class ApplitoolsConfigurationManager {
         eyesConfig.setMatchLevel(MatchLevel.valueOf(applitoolsProperties.getProperty("MATCH_LEVEL").toUpperCase()));
         eyesConfig.setSaveNewTests(Boolean.parseBoolean(applitoolsProperties
                 .getProperty("SAVE_BASELINE_FOR_NEW_TESTS")));
-        eyesConfig.setEnvironmentName(rpProperties.getProperty(Config.TARGET_ENVIRONMENT).toUpperCase());
+        eyesConfig.setEnvironmentName(config.getProperty(Config.TARGET_ENVIRONMENT).toUpperCase());
         eyesConfig.setServerUrl(applitoolsProperties.getProperty("SERVER_URL"));
         if (Strings.isNotNullAndNotEmpty(System.getenv("BUILD_BUILDID"))) {
             eyesConfig.setBranchName(System.getenv("BUILD_SOURCEBRANCHNAME"));
@@ -90,7 +90,7 @@ class ApplitoolsConfigurationManager {
     }
 
     static void setApplitoolsStatus() {
-        isApplitoolsDisabled = !Boolean.parseBoolean(rpProperties.getProperty(Config.IS_VISUAL));
+        isApplitoolsDisabled = !Boolean.parseBoolean(config.getProperty(Config.IS_VISUAL));
         LOGGER.info("Is Applitools enabled from Config file : " + !isApplitoolsDisabled);
         if (Strings.isNotNullAndNotEmpty(System.getenv(Config.IS_VISUAL))) {
             isApplitoolsDisabled = !Boolean.parseBoolean(System.getenv(Config.IS_VISUAL));
@@ -129,3 +129,4 @@ class ApplitoolsConfigurationManager {
         }
     }
 }
+
