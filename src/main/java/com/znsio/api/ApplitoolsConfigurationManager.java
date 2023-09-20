@@ -1,10 +1,16 @@
 package com.znsio.api;
 
+import com.applitools.eyes.EyesException;
+import com.applitools.eyes.MatchLevel;
+import com.applitools.eyes.ProxySettings;
+import com.applitools.eyes.RectangleSize;
+import com.applitools.eyes.selenium.BrowserType;
+import com.applitools.eyes.selenium.StitchMode;
 import com.znsio.api.utils.Config;
 import com.znsio.api.utils.commandline.CommandLineExecutor;
 import com.znsio.api.utils.commandline.CommandLineResponse;
-import com.applitools.eyes.*;
-import com.applitools.eyes.selenium.*;
+import com.applitools.eyes.BatchInfo;
+import com.applitools.eyes.config.Configuration;
 import org.apache.log4j.Logger;
 import org.testng.util.Strings;
 
@@ -98,6 +104,22 @@ class ApplitoolsConfigurationManager {
         }
     }
 
+    static void setProxyIfRequired(Configuration eyesConfig) {
+        if (!isApplitoolsDisabled() && Strings.isNotNullAndNotEmpty(System.getenv("BUILD_BUILDID"))) {
+            if (Strings.isNotNullAndNotEmpty(System.getProperty("HTTPS_PROXY"))) {
+                eyesConfig.setProxy(new ProxySettings(System.getProperty("HTTPS_PROXY")));
+                LOGGER.info("Configured Applitools with Proxy: " + System.getProperty("HTTPS_PROXY"));
+            } else {
+                throw new EyesException("ERROR: Unable to configure proxy settings for AppliTools. " +
+                        "HTTPS_PROXY property value is null or empty");
+            }
+        }
+    }
+
+    static boolean isPlatformWeb() {
+        return config.getProperty(Config.PLATFORM).equalsIgnoreCase("Web");
+    }
+
     private static String getBranchNameUsingGitCommand() {
         String[] getBranchNameCommand = new String[]{"git", "rev-parse", "--abbrev-ref", "HEAD"};
         CommandLineResponse response = CommandLineExecutor.execCommand(getBranchNameCommand);
@@ -114,18 +136,6 @@ class ApplitoolsConfigurationManager {
         } catch (NullPointerException e) {
             throw new RuntimeException("Unable to get viewport size from Applitools configuration",
                     e);
-        }
-    }
-
-    static void setProxyIfRequired(Configuration eyesConfig) {
-        if (!isApplitoolsDisabled() && Strings.isNotNullAndNotEmpty(System.getenv("BUILD_BUILDID"))) {
-            if (Strings.isNotNullAndNotEmpty(System.getProperty("HTTPS_PROXY"))) {
-                eyesConfig.setProxy(new ProxySettings(System.getProperty("HTTPS_PROXY")));
-                LOGGER.info("Configured Applitools with Proxy: " + System.getProperty("HTTPS_PROXY"));
-            } else {
-                throw new EyesException("ERROR: Unable to configure proxy settings for AppliTools. " +
-                        "HTTPS_PROXY property value is null or empty");
-            }
         }
     }
 }
