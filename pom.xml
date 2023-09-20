@@ -28,11 +28,11 @@
             <artifactId>annotations</artifactId>
             <version>24.0.1</version>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/com.applitools/eyes-selenium-java3 -->
+        <!-- https://mvnrepository.com/artifact/com.applitools/eyes-selenium-java5 -->
         <dependency>
             <groupId>com.applitools</groupId>
             <artifactId>eyes-selenium-java5</artifactId>
-            <version>5.48.0</version>
+            <version>5.64.7</version>
         </dependency>
         <!-- https://mvnrepository.com/artifact/org.testng/testng -->
         <dependency>
@@ -42,13 +42,6 @@
             <scope>compile</scope>
         </dependency>
     </dependencies>
-    <build>
-        <resources>
-            <resource>
-                <directory>src/main</directory>
-            </resource>
-        </resources>
-    </build>
     <repositories>
         <repository>
             <id>jitpack.io</id>
