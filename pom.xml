@@ -28,10 +28,10 @@
             <artifactId>annotations</artifactId>
             <version>24.0.1</version>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/com.applitools/eyes-selenium-java5 -->
+        <!-- https://mvnrepository.com/artifact/com.applitools/eyes-appium-java5 -->
         <dependency>
             <groupId>com.applitools</groupId>
-            <artifactId>eyes-selenium-java5</artifactId>
+            <artifactId>eyes-appium-java5</artifactId>
             <version>5.64.7</version>
         </dependency>
         <!-- https://mvnrepository.com/artifact/org.testng/testng -->
