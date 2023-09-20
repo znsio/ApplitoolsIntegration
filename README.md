@@ -1,7 +1,7 @@
 # Introduction
 1. Utility to easily integrate Applitools VisualAI with your JAVA-TestNG automation framework
 2. This is a library which implements basic utilities for [Applitools](https://applitools.com/docs/topics/overview.html) `(com.applitools)`
-3. Dashboard link: https://jioeyes.applitools.com/
+3. Dashboard link: https://eyes.applitools.com/
 
 # Build
 `mvn clean install -DskipTests`
@@ -36,7 +36,7 @@
        ```
        export APPLITOOLS_API_KEY=<Your API KEY>
        ```
-       Applitools API Key can be picked from user Dashboard `https://jioeyes.applitools.com/` for QECC team
+       Applitools API Key can be picked from user Dashboard `https://eyes.applitools.com/`
     3. Annotate the test with the `visual` TestNG group annotation which you want to run as part of visual validation. If the test is not part of `visual` group, visual validations will not take place for that test even if `IS_DISABLED` value is set to `false` and test contains the `eyes` validations.
 
     4. To perform Visual Validations on a test, Add any of the following commands in the test wherever you need to run visual validation. Use one of the following approaches:
