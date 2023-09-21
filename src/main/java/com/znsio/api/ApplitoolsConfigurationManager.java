@@ -43,11 +43,12 @@ class ApplitoolsConfigurationManager {
     static void setBatchProperties(BatchInfo batchInfo) {
         batchInfo.addProperty("Operating System", System.getProperty("os.name"));
         batchInfo.addProperty("Operating System Version", System.getProperty("os.version"));
-        if (Strings.isNotNullAndNotEmpty(System.getenv("BUILD_BUILDID"))) {
+        if (Boolean.parseBoolean(config.getProperty(Config.RUN_IN_CI))) {
             batchInfo.addProperty("Run on Pipeline", "true");
-            batchInfo.addProperty("Pipeline Execution Id", System.getenv("BUILD_BUILDID"));
-            batchInfo.addProperty("Agent Name", System.getenv("AGENT_NAME"));
-            batchInfo.addProperty("Branch Name", System.getenv("BUILD_SOURCEBRANCHNAME"));
+            batchInfo.addProperty("Pipeline Execution ID",
+                    System.getenv(config.getProperty(Config.PIPELINE_EXECUTION_ID)));
+            batchInfo.addProperty("Agent Name", System.getenv(config.getProperty(Config.AGENT_NAME)));
+            batchInfo.addProperty("Branch Name", System.getenv(config.getProperty(Config.BRANCH_NAME)));
         } else {
             batchInfo.addProperty("Run on Pipeline", "false");
             batchInfo.addProperty("Branch Name", getBranchNameUsingGitCommand());
@@ -70,8 +71,8 @@ class ApplitoolsConfigurationManager {
                 .getProperty("SAVE_BASELINE_FOR_NEW_TESTS")));
         eyesConfig.setEnvironmentName(config.getProperty(Config.TARGET_ENVIRONMENT).toUpperCase());
         eyesConfig.setServerUrl(applitoolsProperties.getProperty("SERVER_URL"));
-        if (Strings.isNotNullAndNotEmpty(System.getenv("BUILD_BUILDID"))) {
-            eyesConfig.setBranchName(System.getenv("BUILD_SOURCEBRANCHNAME"));
+        if (Boolean.parseBoolean(config.getProperty(Config.RUN_IN_CI))) {
+            eyesConfig.setBranchName(System.getenv(config.getProperty(Config.BRANCH_NAME)));
         } else {
             eyesConfig.setBranchName(getBranchNameUsingGitCommand());
         }
@@ -105,7 +106,7 @@ class ApplitoolsConfigurationManager {
     }
 
     static void setProxyIfRequired(Configuration eyesConfig) {
-        if (!isApplitoolsDisabled() && Strings.isNotNullAndNotEmpty(System.getenv("BUILD_BUILDID"))) {
+        if (!isApplitoolsDisabled() && Boolean.parseBoolean(config.getProperty(Config.RUN_IN_CI))) {
             if (Strings.isNotNullAndNotEmpty(System.getProperty("HTTPS_PROXY"))) {
                 eyesConfig.setProxy(new ProxySettings(System.getProperty("HTTPS_PROXY")));
                 LOGGER.info("Configured Applitools with Proxy: " + System.getProperty("HTTPS_PROXY"));
