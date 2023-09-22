@@ -82,9 +82,11 @@ public class ApplitoolsInitializer {
         } else {
             testResult = eyesOnApp.close(false);
         }
-        boolean mismatchFound = handleVisualTestResults(testResult);
+        boolean mismatchFound = testResult != null && handleVisualTestResults(testResult);
         LOGGER.info(String.format("Overall Visual Validation failed? - %s%n", mismatchFound));
-        handleFunctionalTestResults(mismatchFound, iTestResult.getName(), testResult);
+        if (mismatchFound) {
+            handleFunctionalTestResults(iTestResult.getName(), testResult);
+        }
     }
 
     @AfterSuite
@@ -149,15 +151,13 @@ public class ApplitoolsInitializer {
         return hasMismatches;
     }
 
-    private void handleFunctionalTestResults(boolean mismatchFound, String methodName, TestResults testResult) {
-        if (mismatchFound) {
-            String failingMessage = String.format("Test: '%s' has visual differences." +
-                    "\nCheck the visual validation results here: '%s'", methodName, testResult.getUrl());
-            LOGGER.info(failingMessage);
-            if (isFailTestWhenVisualDifferenceFound()) {
-                Assert.fail(failingMessage, new Throwable(String.format("'%s' marked as failed in @AfterMethod " +
-                        "because visual validation failed", methodName)));
-            }
+    private void handleFunctionalTestResults(String methodName, TestResults testResult) {
+        String failingMessage = String.format("Test: '%s' has visual differences." +
+                "\nCheck the visual validation results here: '%s'", methodName, testResult.getUrl());
+        LOGGER.info(failingMessage);
+        if (isFailTestWhenVisualDifferenceFound()) {
+            Assert.fail(failingMessage, new Throwable(String.format("'%s' marked as failed in @AfterMethod " +
+                    "because visual validation failed", methodName)));
         }
     }
 }
