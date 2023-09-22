@@ -53,6 +53,10 @@ class ApplitoolsConfigurationManager {
             batchInfo.addProperty("Run on Pipeline", "false");
             batchInfo.addProperty("Branch Name", getBranchNameUsingGitCommand());
         }
+        if (!isPlatformWeb()){
+            batchInfo.addProperty("App Package", config.getProperty(Config.APP_PACKAGE_NAME));
+            batchInfo.addProperty("Local Device Execution", config.getProperty(Config.IS_LOCAL_DEVICE));
+        }
         batchInfo.addProperty("Platform", config.getProperty(Config.PLATFORM).toUpperCase());
         batchInfo.addProperty("Environment", config.getProperty(Config.TARGET_ENVIRONMENT).toUpperCase());
         batchInfo.addProperty("UFG Enabled", applitoolsProperties.getProperty("USE_UFG"));

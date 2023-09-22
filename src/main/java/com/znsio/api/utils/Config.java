@@ -16,6 +16,7 @@ public class Config {
     public static final String APP_NAME = "APP_NAME";
     public static final String IS_VISUAL = "IS_VISUAL";
     public static final String IS_LOCAL_DEVICE = "IS_LOCAL_DEVICE";
+    public static final String APP_PACKAGE_NAME = "APP_PACKAGE_NAME";
     public static final String APPLITOOLS_CONFIGURATION_FILE = "APPLITOOLS_CONFIGURATION_FILE";
     public static final String RUN_IN_CI = "RUN_IN_CI";
     public static final String PIPELINE_EXECUTION_ID = "PIPELINE_EXECUTION_ID";

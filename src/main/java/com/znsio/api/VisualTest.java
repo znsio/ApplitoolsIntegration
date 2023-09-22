@@ -12,6 +12,7 @@ import com.applitools.eyes.selenium.Configuration;
 import com.applitools.eyes.visualgrid.services.RunnerOptions;
 import com.applitools.eyes.visualgrid.services.VisualGridRunner;
 import com.znsio.api.utils.Config;
+import io.appium.java_client.AppiumDriver;
 import org.apache.log4j.Logger;
 import org.openqa.selenium.WebDriver;
 import org.testng.ITestContext;
@@ -27,6 +28,7 @@ import static com.znsio.api.ApplitoolsConfigurationManager.config;
 
 public class VisualTest {
     private static WebDriver webDriver;
+    private static AppiumDriver appiumDriver;
     protected com.applitools.eyes.selenium.Eyes eyesOnWeb;
     protected com.applitools.eyes.appium.Eyes eyesOnApp;
     private static BatchInfo batch;
@@ -36,6 +38,10 @@ public class VisualTest {
 
     public static void driverSetupForVisualTest(WebDriver wDriver) {
         webDriver = wDriver;
+    }
+
+    public static void driverSetupForVisualTest(AppiumDriver aDriver) {
+        appiumDriver = aDriver;
     }
 
     @BeforeSuite
@@ -134,9 +140,7 @@ public class VisualTest {
                 ApplitoolsConfigurationManager.getVisualValidationGroupName() + "' group: " + isTestPartOfVisualGroup);
         eyesOnApp.setIsDisabled((!isTestPartOfVisualGroup || ApplitoolsConfigurationManager.isApplitoolsDisabled()));
         LOGGER.info("Is Applitools enabled for " + method.getName() + ": " + !eyesOnApp.getIsDisabled());
-        //TODO: The driver below will be changed to Appium driver instance once
-        // App tests implementation is completed in getting-started-with-rp-ap repo
-        eyesOnApp.open(webDriver,
+        eyesOnApp.open(appiumDriver,
                 eyesConfig.getAppName() + "-" +
                         config.getProperty(Config.PLATFORM).toUpperCase() + "-" +
                         eyesConfig.getEnvironmentName(),
