@@ -24,9 +24,9 @@ import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 
-import static com.znsio.api.ApplitoolsConfigurationManager.config;
+import static com.znsio.api.ApplitoolsConfigurationManager.*;
 
-public class VisualTest {
+public class ApplitoolsInitializer {
     private static WebDriver webDriver;
     private static AppiumDriver appiumDriver;
     protected com.applitools.eyes.selenium.Eyes eyesOnWeb;
@@ -34,7 +34,7 @@ public class VisualTest {
     private static BatchInfo batch;
     private static Configuration eyesConfig;
     private static EyesRunner runner;
-    private static final Logger LOGGER = Logger.getLogger(VisualTest.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(ApplitoolsInitializer.class.getName());
 
     public static void driverSetupForVisualTest(WebDriver wDriver) {
         webDriver = wDriver;
@@ -48,17 +48,16 @@ public class VisualTest {
     public void setUpVisualTests(XmlTest suite) throws IOException, RuntimeException {
 
         LOGGER.info("@BeforeSuite of VisualTest called");
-        ApplitoolsConfigurationManager.loadProperties();
+        loadProperties();
         eyesConfig = new Configuration();
-        ApplitoolsConfigurationManager.setConfigProperties(eyesConfig);
-        ApplitoolsConfigurationManager.setProxyIfRequired(eyesConfig);
+        setTestProperties(eyesConfig);
+        setProxyIfAvailable(eyesConfig);
         batch = new BatchInfo(eyesConfig.getAppName() + "-" + suite.getSuite().getName() + "-" + suite.getName());
-        ApplitoolsConfigurationManager.setBatchProperties(batch);
+        setBatchProperties(batch);
         eyesConfig.setBatch(batch);
-        if (ApplitoolsConfigurationManager.isPlatformWeb() && ApplitoolsConfigurationManager.isUltraFastGridEnabled()) {
-            ApplitoolsConfigurationManager.setUFGBrowserConfig(eyesConfig);
-            runner = new VisualGridRunner(new RunnerOptions()
-                    .testConcurrency(ApplitoolsConfigurationManager.getConcurrency()));
+        if (isPlatformWeb() && isUltraFastGridEnabled()) {
+            setUFGBrowserConfig(eyesConfig);
+            runner = new VisualGridRunner(new RunnerOptions().testConcurrency(getConcurrency()));
         } else {
             runner = new ClassicRunner();
         }
@@ -68,7 +67,7 @@ public class VisualTest {
     @BeforeMethod
     public void initiateVisualTests(Method method) {
         LOGGER.info("@BeforeMethod of VisualTest called: " + method.getName());
-        if (ApplitoolsConfigurationManager.isPlatformWeb()) {
+        if (isPlatformWeb()) {
             initiateVisualWebTests(method);
         } else {
             initiateVisualAppTests(method);
@@ -79,7 +78,7 @@ public class VisualTest {
     public void closeVisualTest(ITestResult iTestResult, ITestContext context) {
         LOGGER.info("@AfterMethod of VisualTest called: Waiting for visual validation results of test: " +
                 iTestResult.getName());
-        if (ApplitoolsConfigurationManager.isPlatformWeb()) {
+        if (isPlatformWeb()) {
             eyesOnWeb.closeAsync();
         } else {
             eyesOnApp.closeAsync();
@@ -110,15 +109,14 @@ public class VisualTest {
 
     private void initiateVisualWebTests(Method method) {
         eyesOnWeb = new com.applitools.eyes.selenium.Eyes(runner);
-        if (ApplitoolsConfigurationManager.isLogsEnabled()) {
-            eyesOnWeb.setLogHandler(new StdoutLogHandler(ApplitoolsConfigurationManager.isLogsEnabled()));
+        if (isLogsEnabled()) {
+            eyesOnWeb.setLogHandler(new StdoutLogHandler(isLogsEnabled()));
         }
         eyesOnWeb.setConfiguration(eyesConfig);
         boolean isTestPartOfVisualGroup = Arrays.toString(method.getAnnotation(Test.class).groups())
-                .contains(ApplitoolsConfigurationManager.getVisualValidationGroupName());
-        LOGGER.info("Is test part of '" +
-                ApplitoolsConfigurationManager.getVisualValidationGroupName() + "' group: " + isTestPartOfVisualGroup);
-        eyesOnWeb.setIsDisabled((!isTestPartOfVisualGroup || ApplitoolsConfigurationManager.isApplitoolsDisabled()));
+                .contains(getVisualValidationGroupName());
+        LOGGER.info("Is test part of '" + getVisualValidationGroupName() + "' group: " + isTestPartOfVisualGroup);
+        eyesOnWeb.setIsDisabled((!isTestPartOfVisualGroup || isApplitoolsDisabled()));
         LOGGER.info("Is Applitools enabled for " + method.getName() + ": " + !eyesOnWeb.getIsDisabled());
         eyesOnWeb.open(webDriver,
                 eyesConfig.getAppName() + "-" +
@@ -130,15 +128,14 @@ public class VisualTest {
 
     private void initiateVisualAppTests(Method method) {
         eyesOnApp = new com.applitools.eyes.appium.Eyes(runner);
-        if (ApplitoolsConfigurationManager.isLogsEnabled()) {
-            eyesOnApp.setLogHandler(new StdoutLogHandler(ApplitoolsConfigurationManager.isLogsEnabled()));
+        if (isLogsEnabled()) {
+            eyesOnApp.setLogHandler(new StdoutLogHandler(isLogsEnabled()));
         }
         eyesOnApp.setConfiguration(eyesConfig);
         boolean isTestPartOfVisualGroup = Arrays.toString(method.getAnnotation(Test.class).groups())
-                .contains(ApplitoolsConfigurationManager.getVisualValidationGroupName());
-        LOGGER.info("Is test part of '" +
-                ApplitoolsConfigurationManager.getVisualValidationGroupName() + "' group: " + isTestPartOfVisualGroup);
-        eyesOnApp.setIsDisabled((!isTestPartOfVisualGroup || ApplitoolsConfigurationManager.isApplitoolsDisabled()));
+                .contains(getVisualValidationGroupName());
+        LOGGER.info("Is test part of '" + getVisualValidationGroupName() + "' group: " + isTestPartOfVisualGroup);
+        eyesOnApp.setIsDisabled((!isTestPartOfVisualGroup || isApplitoolsDisabled()));
         LOGGER.info("Is Applitools enabled for " + method.getName() + ": " + !eyesOnApp.getIsDisabled());
         eyesOnApp.open(appiumDriver,
                 eyesConfig.getAppName() + "-" +
