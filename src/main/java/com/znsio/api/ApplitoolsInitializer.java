@@ -5,8 +5,6 @@ import com.applitools.eyes.EyesRunner;
 import com.applitools.eyes.StdoutLogHandler;
 import com.applitools.eyes.TestResults;
 import com.applitools.eyes.TestResultsStatus;
-import com.applitools.eyes.TestResultsSummary;
-import com.applitools.eyes.TestResultContainer;
 import com.applitools.eyes.selenium.ClassicRunner;
 import com.applitools.eyes.selenium.Configuration;
 import com.applitools.eyes.visualgrid.services.RunnerOptions;
@@ -15,7 +13,7 @@ import com.znsio.api.utils.Config;
 import io.appium.java_client.AppiumDriver;
 import org.apache.log4j.Logger;
 import org.openqa.selenium.WebDriver;
-import org.testng.ITestContext;
+import org.testng.Assert;
 import org.testng.ITestResult;
 import org.testng.annotations.*;
 import org.testng.xml.XmlTest;
@@ -36,18 +34,18 @@ public class ApplitoolsInitializer {
     private static EyesRunner runner;
     private static final Logger LOGGER = Logger.getLogger(ApplitoolsInitializer.class.getName());
 
-    public static void driverSetupForVisualTest(WebDriver wDriver) {
+    public static void driverSetupForApplitoolsInitializer(WebDriver wDriver) {
         webDriver = wDriver;
     }
 
-    public static void driverSetupForVisualTest(AppiumDriver aDriver) {
+    public static void driverSetupForApplitoolsInitializer(AppiumDriver aDriver) {
         appiumDriver = aDriver;
     }
 
     @BeforeSuite
-    public void setUpVisualTests(XmlTest suite) throws IOException, RuntimeException {
+    public void setUpApplitoolsInitializer(XmlTest suite) throws IOException, RuntimeException {
 
-        LOGGER.info("@BeforeSuite of VisualTest called");
+        LOGGER.info("@BeforeSuite of ApplitoolsInitializer called");
         loadProperties();
         eyesConfig = new Configuration();
         setTestProperties(eyesConfig);
@@ -65,8 +63,8 @@ public class ApplitoolsInitializer {
     }
 
     @BeforeMethod
-    public void initiateVisualTests(Method method) {
-        LOGGER.info("@BeforeMethod of VisualTest called: " + method.getName());
+    public void initiateApplitoolsInitializer(Method method) {
+        LOGGER.info("@BeforeMethod of ApplitoolsInitializer called: " + method.getName());
         if (isPlatformWeb()) {
             initiateVisualWebTests(method);
         } else {
@@ -75,35 +73,23 @@ public class ApplitoolsInitializer {
     }
 
     @AfterMethod
-    public void closeVisualTest(ITestResult iTestResult, ITestContext context) {
-        LOGGER.info("@AfterMethod of VisualTest called: Waiting for visual validation results of test: " +
+    public void closeApplitoolsInitializer(ITestResult iTestResult) {
+        LOGGER.info("@AfterMethod of ApplitoolsInitializer called: Waiting for visual validation results of test: " +
                 iTestResult.getName());
+        TestResults testResult;
         if (isPlatformWeb()) {
-            eyesOnWeb.closeAsync();
+            testResult = eyesOnWeb.close(false);
         } else {
-            eyesOnApp.closeAsync();
+            testResult = eyesOnApp.close(false);
         }
-        TestResultsSummary allTestResults = runner.getAllTestResults(false);
-        TestResultContainer[] results = allTestResults.getAllResults();
-        LOGGER.info(String.format("Number of cross-browser tests run for test: %s: %d%n",
-                iTestResult.getName(), results.length));
-        boolean mismatchFound = false;
-        for (TestResultContainer eachResult : results) {
-            Throwable ex = results[0].getException();
-            TestResults testResult = eachResult.getTestResults();
-            mismatchFound = handleTestResults(testResult) || mismatchFound;
-        }
+        boolean mismatchFound = handleVisualTestResults(testResult);
         LOGGER.info(String.format("Overall Visual Validation failed? - %s%n", mismatchFound));
-        if (mismatchFound) {
-            String failingMessage = "Test: " + iTestResult.getName() + " has visual differences";
-            LOGGER.info(failingMessage);
-            //TODO - fail the test if there is a visual difference found\
-        }
+        handleFunctionalTestResults(mismatchFound, iTestResult.getName(), testResult);
     }
 
     @AfterSuite
     public void closeBatch() {
-        LOGGER.info("@AfterSuite of VisualTest called: Close Visual Test batch");
+        LOGGER.info("@AfterSuite of ApplitoolsInitializer called: Close Visual Test batch");
         batch.setCompleted(true);
     }
 
@@ -144,7 +130,7 @@ public class ApplitoolsInitializer {
                 method.getDeclaringClass().getSimpleName() + "-" + method.getName());
     }
 
-    private boolean handleTestResults(TestResults result) {
+    private boolean handleVisualTestResults(TestResults result) {
         if (!result.getStatus().equals(TestResultsStatus.Disabled)) {
             LOGGER.info("\tTest Name: " + result.getName() + " :: " + result);
             LOGGER.info("\tTest status: " + result.getStatus());
@@ -161,5 +147,17 @@ public class ApplitoolsInitializer {
         boolean hasMismatches = result.getMismatches() != 0 || result.isAborted();
         LOGGER.info("Visual validation failed? - " + hasMismatches);
         return hasMismatches;
+    }
+
+    private void handleFunctionalTestResults(boolean mismatchFound, String methodName, TestResults testResult) {
+        if (mismatchFound) {
+            String failingMessage = String.format("Test: '%s' has visual differences." +
+                    "\nCheck the visual validation results here: '%s'", methodName, testResult.getUrl());
+            LOGGER.info(failingMessage);
+            if (isFailTestWhenVisualDifferenceFound()) {
+                Assert.fail(failingMessage, new Throwable(String.format("'%s' marked as failed in @AfterMethod " +
+                        "because visual validation failed", methodName)));
+            }
+        }
     }
 }

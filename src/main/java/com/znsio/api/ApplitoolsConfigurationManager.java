@@ -142,6 +142,10 @@ class ApplitoolsConfigurationManager {
                 getOverriddenStringValue(config.getProperty(Config.PROXY_KEY)));
     }
 
+    static boolean isFailTestWhenVisualDifferenceFound() {
+        return Boolean.parseBoolean(applitoolsProperties.getProperty("FAIL_TEST_WHEN_DIFFERENCE_FOUND"));
+    }
+
     private static String getBranchNameUsingGitCommand() {
         String[] getBranchNameCommand = new String[]{"git", "rev-parse", "--abbrev-ref", "HEAD"};
         CommandLineResponse response = CommandLineExecutor.execCommand(getBranchNameCommand);
