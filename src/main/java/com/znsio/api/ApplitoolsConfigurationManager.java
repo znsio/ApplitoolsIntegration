@@ -1,13 +1,10 @@
-package com.znsio.api;
+package com.znsio.api.utils;
 
 import com.applitools.eyes.MatchLevel;
 import com.applitools.eyes.ProxySettings;
 import com.applitools.eyes.RectangleSize;
 import com.applitools.eyes.selenium.BrowserType;
 import com.applitools.eyes.selenium.StitchMode;
-import com.znsio.api.utils.Config;
-import com.znsio.api.utils.commandline.CommandLineExecutor;
-import com.znsio.api.utils.commandline.CommandLineResponse;
 import com.applitools.eyes.BatchInfo;
 import com.applitools.eyes.config.Configuration;
 import org.apache.log4j.Logger;

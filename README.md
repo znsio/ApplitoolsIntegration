@@ -135,8 +135,8 @@
 
 3. All the Applitools Batch, Config and UFG Browser configuration related code is present in file `
    src/main/java/com/znsio/api/ApplitoolsConfigurationManager.java``.
-    1. To add Batch Properties, navigate to above java class and add code in
-       method: `setBatchProperties(BatchInfo batchInfo)` as per given syntax and example:
+    1. Batch Properties are configured using method: `setBatchProperties(BatchInfo batchInfo)` as per given syntax and
+       example:
        ```
        batchInfo.addProperty(<Key>, <Value>);
        ```
@@ -144,8 +144,8 @@
        ```
        batchInfo.addProperty("Agent Name", System.getenv("AGENT_NAME"));
        ```
-    2. To add Test Properties, navigate to above Java class and add code in
-       method `setTestProperties(Configuration eyesConfig)`as per given syntax and example:
+    2. Test Properties are configured using method: `setTestProperties(Configuration eyesConfig)`as per given syntax and
+       example:
         ```
        eyesConfig.setPropertyName(<Value>);
        ```
