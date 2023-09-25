@@ -65,6 +65,7 @@
        USE_UFG=<true or false>
        SHOW_LOGS=<true or false>
        SAVE_BASELINE_FOR_NEW_TESTS=<true or false>
+       FAIL_TEST_WHEN_DIFFERENCE_FOUND=<true or false>
        ```
     4. Annotate the test with the `visual` TestNG group annotation which you want to run as part of visual validation.
        If the test is not part of `visual` group, visual validations will not take place for that test even
