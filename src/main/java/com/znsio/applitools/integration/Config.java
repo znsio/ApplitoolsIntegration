@@ -1,4 +1,4 @@
-package com.znsio.api.utils;
+package com.znsio.applitools.integration;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.log4j.Logger;

@@ -1,15 +1,10 @@
-package com.znsio.api;
+package com.znsio.applitools.integration;
 
-import com.applitools.eyes.BatchInfo;
-import com.applitools.eyes.EyesRunner;
-import com.applitools.eyes.StdoutLogHandler;
-import com.applitools.eyes.TestResults;
-import com.applitools.eyes.TestResultsStatus;
+import com.applitools.eyes.*;
 import com.applitools.eyes.selenium.ClassicRunner;
 import com.applitools.eyes.selenium.Configuration;
 import com.applitools.eyes.visualgrid.services.RunnerOptions;
 import com.applitools.eyes.visualgrid.services.VisualGridRunner;
-import com.znsio.api.utils.Config;
 import io.appium.java_client.AppiumDriver;
 import org.apache.log4j.Logger;
 import org.openqa.selenium.WebDriver;
@@ -22,7 +17,7 @@ import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 
-import static com.znsio.api.ApplitoolsConfigurationManager.*;
+import static com.znsio.applitools.integration.ApplitoolsConfigurationManager.*;
 
 public class ApplitoolsInitializer {
     private static WebDriver webDriver;
@@ -55,16 +50,18 @@ public class ApplitoolsInitializer {
         eyesConfig.setBatch(batch);
         if (isPlatformWeb() && isUltraFastGridEnabled()) {
             setUFGBrowserConfig(eyesConfig);
-            runner = new VisualGridRunner(new RunnerOptions().testConcurrency(getConcurrency()));
-        } else {
-            runner = new ClassicRunner();
         }
-        runner.setDontCloseBatches(true);
     }
 
     @BeforeMethod
     public void initiateApplitoolsInitializer(Method method) {
         LOGGER.info("@BeforeMethod of ApplitoolsInitializer called: " + method.getName());
+        if (isPlatformWeb() && isUltraFastGridEnabled()) {
+            runner = new VisualGridRunner(new RunnerOptions().testConcurrency(getConcurrency()));
+        } else {
+            runner = new ClassicRunner();
+        }
+        runner.setDontCloseBatches(true);
         if (isPlatformWeb()) {
             initiateVisualWebTests(method);
         } else {
@@ -76,13 +73,22 @@ public class ApplitoolsInitializer {
     public void closeApplitoolsInitializer(ITestResult iTestResult) {
         LOGGER.info("@AfterMethod of ApplitoolsInitializer called: Waiting for visual validation results of test: " +
                 iTestResult.getName());
-        TestResults testResult;
         if (isPlatformWeb()) {
-            testResult = eyesOnWeb.close(false);
+            eyesOnWeb.closeAsync();
         } else {
-            testResult = eyesOnApp.close(false);
+            eyesOnApp.closeAsync();
         }
-        boolean mismatchFound = testResult != null && handleVisualTestResults(testResult);
+        TestResults testResult =  new TestResults();
+        TestResultsSummary allTestResults = runner.getAllTestResults(false);
+        TestResultContainer[] results = allTestResults.getAllResults();
+        LOGGER.info(String.format("Number of cross-browser tests run for test: %s: %d%n",
+                iTestResult.getName(), results.length));
+        boolean mismatchFound = false;
+        for (TestResultContainer eachResult : results) {
+            Throwable ex = results[0].getException();
+            testResult = eachResult.getTestResults();
+            mismatchFound = handleVisualTestResults(testResult) || mismatchFound;
+        }
         LOGGER.info(String.format("Overall Visual Validation failed? - %s%n", mismatchFound));
         if (mismatchFound) {
             handleFunctionalTestResults(iTestResult.getName(), testResult);

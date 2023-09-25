@@ -1,12 +1,12 @@
-package com.znsio.api.utils;
+package com.znsio.applitools.integration;
 
-public class OverriddenVariable {
+class OverriddenVariable {
 
-    public static String getOverriddenStringValue(String key) {
+    static String getOverriddenStringValue(String key) {
         return getValueFromEnvOrProperty(key);
     }
 
-    public static String getOverriddenStringValue(String key, String defaultValue) {
+    static String getOverriddenStringValue(String key, String defaultValue) {
         return (isKeyProvidedInEnvOrProperty(key))
                 ? getValueFromEnvOrProperty(key)
                 : defaultValue;

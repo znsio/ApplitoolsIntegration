@@ -1,4 +1,4 @@
-package com.znsio.api.utils;
+package com.znsio.applitools.integration;
 
 import com.applitools.eyes.MatchLevel;
 import com.applitools.eyes.ProxySettings;
@@ -17,7 +17,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
-import static com.znsio.api.utils.OverriddenVariable.getOverriddenStringValue;
+import static com.znsio.applitools.integration.OverriddenVariable.getOverriddenStringValue;
 
 class ApplitoolsConfigurationManager {
     private static final Properties applitoolsProperties = new Properties();
@@ -144,6 +144,7 @@ class ApplitoolsConfigurationManager {
     }
 
     private static String getBranchNameUsingGitCommand() {
+        //TODO: This currently works only for Mac/Linux. Need to update to make it work for Windows as well
         String[] getBranchNameCommand = new String[]{"git", "rev-parse", "--abbrev-ref", "HEAD"};
         CommandLineResponse response = CommandLineExecutor.execCommand(getBranchNameCommand);
         String branchName = response.getStdOut();

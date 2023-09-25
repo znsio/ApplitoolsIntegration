@@ -1,31 +1,31 @@
-package com.znsio.api.utils.commandline;
+package com.znsio.applitools.integration;
 
-public class CommandLineResponse {
+class CommandLineResponse {
     private int exitCode;
     private String stdOut;
     private String errOut;
 
-    public int getExitCode() {
+    int getExitCode() {
         return exitCode;
     }
 
-    public void setExitCode(int exitCode) {
+    void setExitCode(int exitCode) {
         this.exitCode = exitCode;
     }
 
-    public String getStdOut() {
+    String getStdOut() {
         return stdOut;
     }
 
-    public void setStdOut(String stdOut) {
+    void setStdOut(String stdOut) {
         this.stdOut = stdOut;
     }
 
-    public String getErrOut() {
+    String getErrOut() {
         return errOut;
     }
 
-    public void setErrOut(String errOut) {
+    void setErrOut(String errOut) {
         this.errOut = errOut;
     }
 

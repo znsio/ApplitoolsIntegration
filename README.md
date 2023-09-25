@@ -114,8 +114,8 @@
        to make sure that your content is visually perfect on every device, screen size, and browser combination. To Run
        Visual Validations on multiple Browser Types Using Ultra Fast Grid, Set `USE_UFG` to `true`
        in `applitools.properties` file of your automation framework repo. Browser Combination need to be added
-       in `setUFGBrowserConfig(Configuration eyesConfig)`
-       in `src/main/java/com/znsio/api/ApplitoolsConfigurationManager.java` as illustrated in Below example:
+       in `setUFGBrowserConfig(Configuration eyesConfig)` under `ApplitoolsConfigurationManager` class as illustrated in
+       Below example:
         ```
         eyesConfig.addBrowser(1512, 866, BrowserType.CHROME);
         eyesConfig.addBrowser(1600, 1200, BrowserType.FIREFOX);
@@ -133,8 +133,8 @@
             - Set the Viewport size in `VIEWPORT_SIZE` in format: `Widthxheight` in `applitools.properties` file of your
               automation framework repo
 
-3. All the Applitools Batch, Config and UFG Browser configuration related code is present in file `
-   src/main/java/com/znsio/api/ApplitoolsConfigurationManager.java``.
+3. All the Applitools Batch, Config and UFG Browser configuration related code is present
+   in `ApplitoolsConfigurationManager` class.
     1. Batch Properties are configured using method: `setBatchProperties(BatchInfo batchInfo)` as per given syntax and
        example:
        ```

@@ -1,4 +1,4 @@
-package com.znsio.api.utils.commandline;
+package com.znsio.applitools.integration;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
@@ -6,15 +6,15 @@ import org.apache.log4j.Logger;
 import java.nio.charset.StandardCharsets;
 import java.util.concurrent.TimeUnit;
 
-public class CommandLineExecutor {
+class CommandLineExecutor {
     private static final Logger LOGGER = Logger.getLogger(CommandLineExecutor.class.getSimpleName());
     private static final int DEFAULT_COMMAND_TIMEOUT = 60;
 
-    public static CommandLineResponse execCommand(final String[] command) {
+    static CommandLineResponse execCommand(final String[] command) {
         return execCommand(command, DEFAULT_COMMAND_TIMEOUT);
     }
 
-    public static CommandLineResponse execCommand(final String[] command, int timeoutInSeconds) {
+    static CommandLineResponse execCommand(final String[] command, int timeoutInSeconds) {
         String jointCommand = String.join(" ", command);
         String message = "\tExecuting Command: " + jointCommand;
         LOGGER.info(message);
