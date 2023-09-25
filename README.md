@@ -68,7 +68,15 @@
        ```
     4. Annotate the test with the `visual` TestNG group annotation which you want to run as part of visual validation.
        If the test is not part of `visual` group, visual validations will not take place for that test even
-       if `IS_DISABLED` value is set to `false` and test contains the `eyes` validations.
+       if `IS_DISABLED` value is set to `false` and test contains the `eyes` validations. For instance,
+       ```java
+       @Test(description = "Validating login with valid username and password", groups = {"visual"})
+       public void validLoginTest(String username, String password, String expectedMessage) throws InterruptedException {
+
+          performLogin(username, password);
+          verifyMessageAfterLogin(expectedMessage);
+       }
+       ```
     5. To perform Visual Validations on a test, add any of the following commands in the test wherever you need to run
        visual validation. Use one of the following approaches:
         1. #### Full Screen/Visible Viewport validation (Eyes.checkWindow()):
