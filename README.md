@@ -69,7 +69,7 @@
     4. Annotate the test with the `visual` TestNG group annotation which you want to run as part of visual validation.
        If the test is not part of `visual` group, visual validations will not take place for that test even
        if `IS_DISABLED` value is set to `false` and test contains the `eyes` validations. For instance,
-       ```java
+       ```
        @Test(description = "Validating login with valid username and password", groups = {"visual"})
        public void validLoginTest(String username, String password, String expectedMessage) throws InterruptedException {
 
@@ -133,35 +133,15 @@
             - Set the Viewport size in `VIEWPORT_SIZE` in format: `Widthxheight` in `applitools.properties` file of your
               automation framework repo
 
-3. All the Applitools Batch, Config and UFG Browser configuration related code is present
-   in `ApplitoolsConfigurationManager` class.
-    1. Batch Properties are configured using method: `setBatchProperties(BatchInfo batchInfo)` as per given syntax and
-       example:
-       ```
-       batchInfo.addProperty(<Key>, <Value>);
-       ```
-       example:
-       ```
-       batchInfo.addProperty("Agent Name", System.getenv("AGENT_NAME"));
-       ```
-    2. Test Properties are configured using method: `setTestProperties(Configuration eyesConfig)`as per given syntax and
-       example:
-        ```
-       eyesConfig.setPropertyName(<Value>);
-       ```
-       example:
-       ```
-       eyesConfig.setAppName(rpProperties.getProperty(Config.APP_NAME));
-       ```
-    3. **Dynamic properties:** For setting any additional property to either batch/test properties which is not already
-       configured in `ApplitoolsConfigurationManager` class, set that attribute key and value at either System Property
-       level or at Environment variable. Any key with prefix `AP_BATCH_` (for Batch Property) or `AP_TEST_` (for Test
-       property) set at System property or Environment variable level will be set as Applitools's Batch/Test property
-       respectively. The method which takes care of this configuration is `setPropertiesFromSystemVariables` defined
-       inside `ApplitoolsConfigurationManager` class.
-       For instance, if you're setting environment variable like `export AP_BATCH_Version=0.0.1`
-       and `export AP_TEST_Version=0.0.1`, then on Applitools dashboard, you'll see the corresponding properties
-       as `Version:0.0.1` for Batch/Test property respectively
+3. **Dynamic properties:** For setting any additional property to either batch/test properties which is not already
+   configured in `ApplitoolsConfigurationManager` class, set that attribute key and value at either System Property
+   level or at Environment variable. Any key with prefix `AP_BATCH_` (for Batch Property) or `AP_TEST_` (for Test
+   property) set at System property or Environment variable level will be set as Applitools's Batch/Test property
+   respectively. The method which takes care of this configuration is `setPropertiesFromSystemVariables` defined
+   inside `ApplitoolsConfigurationManager` class.
+   For instance, if you're setting environment variable like `export AP_BATCH_Version=0.0.1`
+   and `export AP_TEST_Version=0.0.1`, then on Applitools dashboard, you'll see the corresponding properties
+   as `Version:0.0.1` for Batch/Test property respectively
 4. **Pipeline configuration:**
     1. Set an environment variable `IS_VISUAL` to `true` for configuring visual validations for
        pipeline executions. This property takes precedence over the `IS_VISUAL` property value of `config.properties` in
