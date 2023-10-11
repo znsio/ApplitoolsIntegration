@@ -31,14 +31,10 @@ public class ApplitoolsInitializer {
 
     public void driverSetupForApplitoolsInitializer(WebDriver driver) {
         if (isPlatformWeb()) {
-            webDriver = (WebDriver) driver;
+            webDriver = driver;
         } else {
             appiumDriver = (AppiumDriver) driver;
         }
-    }
-
-    public void driverSetupForApplitoolsInitializer(AppiumDriver aDriver) {
-        appiumDriver = aDriver;
     }
 
     public com.applitools.eyes.selenium.Eyes getWebEyes() {
