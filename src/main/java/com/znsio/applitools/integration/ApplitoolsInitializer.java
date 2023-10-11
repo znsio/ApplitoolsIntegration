@@ -10,7 +10,7 @@ import org.apache.log4j.Logger;
 import org.openqa.selenium.WebDriver;
 import org.testng.Assert;
 import org.testng.ITestResult;
-import org.testng.annotations.*;
+import org.testng.annotations.Test;
 import org.testng.xml.XmlTest;
 
 import java.io.IOException;
@@ -20,24 +20,35 @@ import java.util.Arrays;
 import static com.znsio.applitools.integration.ApplitoolsConfigurationManager.*;
 
 public class ApplitoolsInitializer {
-    private static WebDriver webDriver;
-    private static AppiumDriver appiumDriver;
-    protected com.applitools.eyes.selenium.Eyes eyesOnWeb;
-    protected com.applitools.eyes.appium.Eyes eyesOnApp;
+    private WebDriver webDriver;
+    private AppiumDriver appiumDriver;
+    private com.applitools.eyes.selenium.Eyes eyesOnWeb;
+    private com.applitools.eyes.appium.Eyes eyesOnApp;
     private static BatchInfo batch;
-    private static Configuration eyesConfig;
-    private static EyesRunner runner;
+    private Configuration eyesConfig;
+    private EyesRunner runner;
     private static final Logger LOGGER = Logger.getLogger(ApplitoolsInitializer.class.getName());
 
-    public static void driverSetupForApplitoolsInitializer(WebDriver wDriver) {
-        webDriver = wDriver;
+    public void driverSetupForApplitoolsInitializer(WebDriver driver) {
+        if (isPlatformWeb()) {
+            webDriver = (WebDriver) driver;
+        } else {
+            appiumDriver = (AppiumDriver) driver;
+        }
     }
 
-    public static void driverSetupForApplitoolsInitializer(AppiumDriver aDriver) {
+    public void driverSetupForApplitoolsInitializer(AppiumDriver aDriver) {
         appiumDriver = aDriver;
     }
 
-    @BeforeSuite
+    public com.applitools.eyes.selenium.Eyes getWebEyes() {
+        return this.eyesOnWeb;
+    }
+
+    public com.applitools.eyes.appium.Eyes getAppEyes() {
+        return this.eyesOnApp;
+    }
+
     public void setUpApplitoolsInitializer(XmlTest suite) throws IOException, RuntimeException {
 
         LOGGER.info("@BeforeSuite of ApplitoolsInitializer called");
@@ -53,7 +64,6 @@ public class ApplitoolsInitializer {
         }
     }
 
-    @BeforeMethod
     public void initiateApplitoolsInitializer(Method method) {
         LOGGER.info("@BeforeMethod of ApplitoolsInitializer called: " + method.getName());
         if (isPlatformWeb() && isUltraFastGridEnabled()) {
@@ -69,7 +79,6 @@ public class ApplitoolsInitializer {
         }
     }
 
-    @AfterMethod
     public void closeApplitoolsInitializer(ITestResult iTestResult) {
         LOGGER.info("@AfterMethod of ApplitoolsInitializer called: Waiting for visual validation results of test: " +
                 iTestResult.getName());
@@ -78,7 +87,7 @@ public class ApplitoolsInitializer {
         } else {
             eyesOnApp.closeAsync();
         }
-        TestResults testResult =  new TestResults();
+        TestResults testResult = new TestResults();
         TestResultsSummary allTestResults = runner.getAllTestResults(false);
         TestResultContainer[] results = allTestResults.getAllResults();
         LOGGER.info(String.format("Number of cross-browser tests run for test: %s: %d%n",
@@ -95,7 +104,6 @@ public class ApplitoolsInitializer {
         }
     }
 
-    @AfterSuite
     public void closeBatch() {
         LOGGER.info("@AfterSuite of ApplitoolsInitializer called: Close Visual Test batch");
         batch.setCompleted(true);
