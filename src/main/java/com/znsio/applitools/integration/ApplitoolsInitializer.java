@@ -60,7 +60,7 @@ public class ApplitoolsInitializer {
         }
     }
 
-    public void initiateApplitoolsInitializer(Method method) {
+    public void initiateApplitoolsInitializer(Method method, WebDriver webDriver) {
         LOGGER.info("@BeforeMethod of ApplitoolsInitializer called: " + method.getName());
         if (isPlatformWeb() && isUltraFastGridEnabled()) {
             runner = new VisualGridRunner(new RunnerOptions().testConcurrency(getConcurrency()));
@@ -69,7 +69,7 @@ public class ApplitoolsInitializer {
         }
         runner.setDontCloseBatches(true);
         if (isPlatformWeb()) {
-            initiateVisualWebTests(method);
+            initiateVisualWebTests(method, webDriver);
         } else {
             initiateVisualAppTests(method);
         }
@@ -105,7 +105,7 @@ public class ApplitoolsInitializer {
         batch.setCompleted(true);
     }
 
-    private void initiateVisualWebTests(Method method) {
+    private void initiateVisualWebTests(Method method, WebDriver webDriver) {
         eyesOnWeb = new com.applitools.eyes.selenium.Eyes(runner);
         if (isLogsEnabled()) {
             eyesOnWeb.setLogHandler(new StdoutLogHandler(isLogsEnabled()));
