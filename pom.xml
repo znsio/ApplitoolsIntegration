@@ -32,7 +32,7 @@
         <dependency>
             <groupId>com.applitools</groupId>
             <artifactId>eyes-appium-java5</artifactId>
-            <version>5.64.7</version>
+            <version>5.70.0</version>
         </dependency>
         <!-- https://mvnrepository.com/artifact/org.testng/testng -->
         <dependency>
